@@ -4,51 +4,43 @@
 
 from flask import Flask, render_template, request
 import re
-#from tokens import tokens#
 
 app = Flask(__name__)
-
-
-
 
 # Definir los tokens
 tokens = {
     'for': 'Reservada For',
-    'public': 'Reservado',
-    'static': 'Reservado',
-    'void': 'Reservado',
-    'float': 'Tipo Flotante',
-    'char': 'Tipo Carácter',
+    'public': 'Reservado Public',
+    'static': 'Reservado Static',
+    'void': 'Reservado Void',
+    'float': 'Tipo Flotante Float',
+    'char': 'Tipo Carácter Char',
     'string': 'Tipo Cadena',
-    'main': 'Identificador',
+    'main': 'Identificador Main',
     'do': 'Reservada Do',
     'while': 'Reservada While',
     'if': 'Reservada If',
     'else': 'Reservada Else',
     'return': 'Reservada Return',
     'int': 'Reservada Int',
-    'System': 'Reservado Identificador',
-    'out': 'Reservado Identificador',
-    'println': 'Reservado Identificador',
+    'System': 'Reservado System',
+    'out': 'Reservado Out',
+    'println': 'Reservado Println',
     '(': 'Reservada Paren_izq',
     ')': 'Reservada Paren_der',
     '{': 'Reservada Llave_izq',
     '}': 'Reservada Llave_der',
     '=': 'Reservada Igual',
     '+': 'Reservada Suma',
-    '1': 'Reservado Numero',
-    '5': 'Reservado Numero',
-    '<=': 'Reservada Menor Que',  
+    '++': 'Reservada Incremento',
+    '<=': 'Reservada Menor Que',
     ';': 'Reservada Punto_coma',
     '.': 'Reservada Punto',
     '"': 'Reservada Cadena'
-
 }
 
-
-
-# Expresión regular para encontrar tokens, incluyendo cadenas y operadores compuestos
-token_regex = r'\".*?\"|<=|\w+|[^\w\s]'
+# Expresión regular para encontrar tokens, incluyendo cadenas, números, identificadores y operadores compuestos
+token_regex = r'\".*?\"|<=|\+\+|\d+|\w+|[^\w\s]'
 
 @app.route('/')
 def index():
@@ -63,32 +55,57 @@ def analyze():
     syntax_error = False
     error_lexema = None
     error_line = None
+    error_position = None
+    lex_error = False
 
     for i, line in enumerate(lines, start=1):
         tokens_matches = re.finditer(token_regex, line)
 
         for match in tokens_matches:
             token = match.group()
+            position = match.start() + 1  # Posición del carácter en la línea
 
-            # Si el token es una cadena entre comillas
             if token.startswith('"') and token.endswith('"'):
                 token_type = 'Reservada Cadena'
+            elif token.isdigit():
+                token_type = 'Reservado Numero'  # Cualquier número
+            elif re.match(r'^[a-zA-Z_]\w*$', token) and token not in tokens:
+                token_type = 'Identificador'  # Cualquier identificador que no sea una palabra reservada
             else:
-                token_type = tokens.get(token, 'Identificador')
+                token_type = tokens.get(token, None)
 
-            results.append({'token': token_type, 'lexema': token, 'linea': i})
+            if token_type:
+                results.append({'token': token_type, 'lexema': token, 'linea': i})
+                if token_type.startswith('Reservada'):
+                    reserved_count += 1
+            else:
+                # Marcar un error léxico si no coincide con ningún token
+                lex_error = True
+                error_lexema = token
+                error_line = i
+                error_position = position
+                break
 
-            if token_type.startswith('Reservada'):
-                reserved_count += 1
+        # Si hay un error léxico, detener el análisis
+        if lex_error:
+            break
 
         # Detectar error sintáctico si no encuentra ';' al final de la línea
-        if not line.endswith(';') and '{' not in line and '}' not in line and line.strip():
+        if not line.endswith(';') and '{' not in line and '}' not in line and line.strip() and not lex_error:
             syntax_error = True
-            error_lexema = line.strip()  # Guardar la línea con el error
-            error_line = i  # Guardar el número de línea del error
+            error_lexema = line.strip()
+            error_line = i
+            break
+
+    if lex_error:
+        error_message = f"ERROR EN LA LÍNEA {error_line}, POSICIÓN {error_position}: CARACTER NO VÁLIDO '{error_lexema}'"
+    elif syntax_error:
+        error_message = f"ERROR DE SINTAXIS EN LA LÍNEA {error_line}. SE ESPERABA UNA EXPRESIÓN VÁLIDA."
+    else:
+        error_message = "NO HAY ERRORES DE SINTAXIS"
 
     return render_template('index.html', results=results, code=text, reserved_count=reserved_count,
-                        syntax_error=syntax_error, error_lexema=error_lexema, error_line=error_line)
+                        syntax_error=syntax_error, error_message=error_message)
 
 if __name__ == '__main__':
     app.run(debug=True)

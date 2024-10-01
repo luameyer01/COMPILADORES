@@ -1,44 +1,48 @@
 import ply.yacc as yacc
 from flask import Flask, render_template, request
 import re
-from analizador_lex import tokens
-from token import tokens
 
+from analizador_lex import tokens  # Asegúrate de que este archivo tenga los tokens del analizador léxico.
 
+# Definimos los tokens que se utilizarán en el analizador sintáctico.
+tokens = [
+    'FOR', 'PUBLIC', 'STATIC', 'VOID', 'FLOAT', 'CHAR', 'STRING', 'MAIN', 'DO', 'WHILE', 
+    'IF', 'ELSE', 'RETURN', 'INT', 'SYSTEM', 'OUT', 'PRINTLN', 'PAREN_IZQ', 'PAREN_DER', 
+    'LLAVE_IZQ', 'LLAVE_DER', 'IGUAL', 'SUMA', 'INCREMENTO', 'MENOR_QUE', 'PUNTO_COMA', 
+    'PUNTO', 'CADENA', 'NUMERO', 'IDENTIFICADOR'
+]
 
-app = Flask(__name__)
-
-tokens = (
-    'FOR', 'DO', 'WHILE', 'IF', 'ELSE', 'RETURN',
-    'INT', 'PUBLIC', 'STATIC', 'VOID', 'FLOAT', 'CHAR', 'STRING',
-    'MAIN', 'OUT', 'SYSTEM', 'PRINTLN', 'N', 'LPAREN', 'RPAREN', 
-    'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'LE', 'PLUS', 'MINUS', 
-    'TIMES', 'DIVIDE', 'ASSIGN', 'SEMICOLON', 'COMMA', 'PERIOD', 'STRING_LITERAL'
-)
-
+# Precedencia de operadores
 precedence = (
-    ('right', 'FOR', 'DO', 'WHILE', 'IF', 'ELSE', 'RETURN'),  # Palabras reservadas de control de flujo
-    ('right', 'INT', 'PUBLIC', 'STATIC', 'VOID'),             # Declaraciones y tipos reservados
-    ('right', 'FLOAT', 'CHAR', 'STRING'),                     # Tipos de datos
-    ('right', 'MAIN', 'OUT', 'SYSTEM', 'PRINTLN', 'N'),       # Identificadores
-    ('left', 'LPAREN', 'RPAREN'),                             # Paréntesis
-    ('left', 'LBRACE', 'RBRACE'),                             # Llaves
-    ('left', 'LBRACKET', 'RBRACKET'),                         # Corchetes
-    ('left', 'LE'),                                           # Comparación (<=)
-    ('left', 'PLUS', 'MINUS'),                                # Operadores aritméticos
-    ('left', 'TIMES', 'DIVIDE'),                              # Operadores aritméticos
-    ('right', 'ASSIGN'),                                      # Operador de asignación (=)
-    ('right', 'STRING_LITERAL')                               # Cadenas literales
+    ('right', 'FOR', 'DO', 'WHILE', 'IF', 'ELSE', 'RETURN'),  
+    ('right', 'INT', 'PUBLIC', 'STATIC', 'VOID'),  
+    ('right', 'FLOAT', 'CHAR', 'STRING'),  
+    ('right', 'MAIN', 'OUT', 'SYSTEM', 'PRINTLN', 'N'),  
+    ('left', 'LPAREN', 'RPAREN'),  
+    ('left', 'LBRACE', 'RBRACE'),  
+    ('left', 'LE'),  
+    ('left', 'PLUS', 'MINUS'),  
+    ('left', 'TIMES', 'DIVIDE'),  
+    ('right', 'ASSIGN'),  
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE'),
+    ('right', 'ASSIGN'),
+    ('left', 'LPAREN', 'RPAREN'),
+    ('left', 'LE'),
+    ('right', 'STRING_LITERAL')  
 )
 
 
+# Expresión regular para encontrar tokens, incluyendo cadenas, números, identificadores y operadores compuestos
+token_regex = r'\".*?\"|<=|\+\+|\d+|\w+|[^\w\s]'
 
-# Reglas para las expresiones binarias (suma, resta, multiplicación, división)
+
+# Reglas para expresiones binarias
 def p_expression_binop(p):
     '''expression : expression PLUS expression
-                | expression MINUS expression
-                | expression TIMES expression
-                | expression DIVIDE expression'''
+                  | expression MINUS expression
+                  | expression TIMES expression
+                  | expression DIVIDE expression'''
     if p[2] == '+':
         p[0] = p[1] + p[3]
     elif p[2] == '-':
@@ -48,54 +52,48 @@ def p_expression_binop(p):
     elif p[2] == '/':
         p[0] = p[1] / p[3]
 
-# Regla para los números
+# Regla para números
 def p_expression_number(p):
-    'expression : NUMBER'
+    'expression : N'
     p[0] = p[1]
 
-# Regla para el uso de paréntesis
+# Regla para paréntesis
 def p_expression_parentheses(p):
     'expression : LPAREN expression RPAREN'
     p[0] = p[2]
 
 # Regla para asignaciones
 def p_expression_assign(p):
-    'expression : IDENTIFIER ASSIGN expression'
+    'expression : OUT ASSIGN expression'
     p[0] = ('assign', p[1], p[3])
 
-# Regla para las palabras reservadas
+# Regla para palabras reservadas
 def p_expression_reserved(p):
     '''expression : FOR
-                | DO
-                | WHILE
-                | IF
-                | ELSE
-                | RETURN'''
+                  | DO
+                  | WHILE
+                  | IF
+                  | ELSE
+                  | RETURN'''
     p[0] = p[1]
 
-# Regla para operadores de comparación
+# Regla para comparación
 def p_expression_comparison(p):
-    '''expression : expression LE expression'''
+    'expression : expression LE expression'
     p[0] = ('<=', p[1], p[3])
 
-# Manejo de errores de sintaxis
-#def p_error(p):
-#   print("Error de sintaxis en la entrada:", p)
-
+# Manejo de errores sintácticos
 def p_error(p):
     if p:
-        print(f"Error de sintaxis en la entrada: {p.value} en la línea {p.lineno}")
+        print(f"Error de sintaxis en el token '{p.value}' en la línea {p.lineno}")
     else:
         print("Error de sintaxis: Fin de archivo inesperado")
 
+# Construcción del parser
+parser = yacc.yacc()
 
-# Construcción del analizador sintáctico
-yacc.yacc()
-
-#/////////////////////////////////////////////////////
-
-# Expresión regular para encontrar tokens
-token_regex = r'\w+|[^\w\s]'
+# Código Flask y análisis
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -110,20 +108,16 @@ def analyze():
     results = []
 
     for i, line in enumerate(lines, start=1):
-        # Dividir la línea en componentes utilizando expresiones regulares
         tokens_matches = re.finditer(token_regex, line)
         
         for match in tokens_matches:
             token = match.group()
-            # Procesar números enteros, descomponiéndolos en dígitos individuales
             if token.isdigit():
                 for digit in token:
                     results.append({'token': tokens.get(digit, 'Identificador'), 'lexema': digit, 'linea': i})
             else:
-                # Verificar si el token está en el diccionario de tokens, si no, marcarlo como desconocido
                 token_type = tokens.get(token, 'Identificador')
                 results.append({'token': token_type, 'lexema': token, 'linea': i})
-                # Incrementar el contador si es una palabra reservada
                 if 'Reservado' == token_type:
                     reserved_count += 1
 
@@ -131,5 +125,3 @@ def analyze():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
