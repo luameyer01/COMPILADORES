@@ -1,0 +1,375 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    PROGRAMA
+
+Grammar
+
+Rule 0     S' -> programa
+Rule 1     programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+Rule 2     declaration -> INT varlist PUNTOCOMA
+Rule 3     varlist -> ID
+Rule 4     varlist -> ID COMA varlist
+Rule 5     statements -> statement statements
+Rule 6     statements -> statement
+Rule 7     statement -> READ ID PUNTOCOMA
+Rule 8     statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA
+Rule 9     statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA
+Rule 10    statement -> ID IGUAL expression PUNTOCOMA
+Rule 11    expression -> ID MAS ID
+
+Terminals, with rules where they appear
+
+COMA                 : 4
+END                  : 1
+ID                   : 1 1 3 4 7 9 10 11 11
+IGUAL                : 10
+INT                  : 2
+LLAVE_ABIERTA        : 1
+LLAVE_CERRADA        : 1
+MAS                  : 11
+PARENTESIS_ABIERTO   : 1 8 9
+PARENTESIS_CERRADO   : 1 8 9
+PRINTF               : 1 8 9
+PROGRAMA             : 
+PUNTOCOMA            : 1 2 7 8 9 10
+READ                 : 7
+STRING               : 8
+error                : 
+
+Nonterminals, with rules where they appear
+
+declaration          : 1
+expression           : 10
+programa             : 0
+statement            : 5 6
+statements           : 1 5
+varlist              : 2 4
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . programa
+    (1) programa -> . ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+
+    ID              shift and go to state 2
+
+    programa                       shift and go to state 1
+
+state 1
+
+    (0) S' -> programa .
+
+
+
+state 2
+
+    (1) programa -> ID . ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+
+    ID              shift and go to state 3
+
+
+state 3
+
+    (1) programa -> ID ID . PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+
+    PARENTESIS_ABIERTO shift and go to state 4
+
+
+state 4
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO . PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+
+    PRINTF          shift and go to state 5
+
+
+state 5
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF . PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+
+    PARENTESIS_CERRADO shift and go to state 6
+
+
+state 6
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO . LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA
+
+    LLAVE_ABIERTA   shift and go to state 7
+
+
+state 7
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA . declaration statements END PUNTOCOMA LLAVE_CERRADA
+    (2) declaration -> . INT varlist PUNTOCOMA
+
+    INT             shift and go to state 9
+
+    declaration                    shift and go to state 8
+
+state 8
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration . statements END PUNTOCOMA LLAVE_CERRADA
+    (5) statements -> . statement statements
+    (6) statements -> . statement
+    (7) statement -> . READ ID PUNTOCOMA
+    (8) statement -> . PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA
+    (9) statement -> . PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA
+    (10) statement -> . ID IGUAL expression PUNTOCOMA
+
+    READ            shift and go to state 14
+    PRINTF          shift and go to state 11
+    ID              shift and go to state 10
+
+    statements                     shift and go to state 12
+    statement                      shift and go to state 13
+
+state 9
+
+    (2) declaration -> INT . varlist PUNTOCOMA
+    (3) varlist -> . ID
+    (4) varlist -> . ID COMA varlist
+
+    ID              shift and go to state 16
+
+    varlist                        shift and go to state 15
+
+state 10
+
+    (10) statement -> ID . IGUAL expression PUNTOCOMA
+
+    IGUAL           shift and go to state 17
+
+
+state 11
+
+    (8) statement -> PRINTF . PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA
+    (9) statement -> PRINTF . PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA
+
+    PARENTESIS_ABIERTO shift and go to state 18
+
+
+state 12
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements . END PUNTOCOMA LLAVE_CERRADA
+
+    END             shift and go to state 19
+
+
+state 13
+
+    (5) statements -> statement . statements
+    (6) statements -> statement .
+    (5) statements -> . statement statements
+    (6) statements -> . statement
+    (7) statement -> . READ ID PUNTOCOMA
+    (8) statement -> . PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA
+    (9) statement -> . PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA
+    (10) statement -> . ID IGUAL expression PUNTOCOMA
+
+    END             reduce using rule 6 (statements -> statement .)
+    READ            shift and go to state 14
+    PRINTF          shift and go to state 11
+    ID              shift and go to state 10
+
+    statement                      shift and go to state 13
+    statements                     shift and go to state 20
+
+state 14
+
+    (7) statement -> READ . ID PUNTOCOMA
+
+    ID              shift and go to state 21
+
+
+state 15
+
+    (2) declaration -> INT varlist . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 22
+
+
+state 16
+
+    (3) varlist -> ID .
+    (4) varlist -> ID . COMA varlist
+
+    PUNTOCOMA       reduce using rule 3 (varlist -> ID .)
+    COMA            shift and go to state 23
+
+
+state 17
+
+    (10) statement -> ID IGUAL . expression PUNTOCOMA
+    (11) expression -> . ID MAS ID
+
+    ID              shift and go to state 24
+
+    expression                     shift and go to state 25
+
+state 18
+
+    (8) statement -> PRINTF PARENTESIS_ABIERTO . STRING PARENTESIS_CERRADO PUNTOCOMA
+    (9) statement -> PRINTF PARENTESIS_ABIERTO . ID PARENTESIS_CERRADO PUNTOCOMA
+
+    STRING          shift and go to state 26
+    ID              shift and go to state 27
+
+
+state 19
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END . PUNTOCOMA LLAVE_CERRADA
+
+    PUNTOCOMA       shift and go to state 28
+
+
+state 20
+
+    (5) statements -> statement statements .
+
+    END             reduce using rule 5 (statements -> statement statements .)
+
+
+state 21
+
+    (7) statement -> READ ID . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 29
+
+
+state 22
+
+    (2) declaration -> INT varlist PUNTOCOMA .
+
+    READ            reduce using rule 2 (declaration -> INT varlist PUNTOCOMA .)
+    PRINTF          reduce using rule 2 (declaration -> INT varlist PUNTOCOMA .)
+    ID              reduce using rule 2 (declaration -> INT varlist PUNTOCOMA .)
+
+
+state 23
+
+    (4) varlist -> ID COMA . varlist
+    (3) varlist -> . ID
+    (4) varlist -> . ID COMA varlist
+
+    ID              shift and go to state 16
+
+    varlist                        shift and go to state 30
+
+state 24
+
+    (11) expression -> ID . MAS ID
+
+    MAS             shift and go to state 31
+
+
+state 25
+
+    (10) statement -> ID IGUAL expression . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 32
+
+
+state 26
+
+    (8) statement -> PRINTF PARENTESIS_ABIERTO STRING . PARENTESIS_CERRADO PUNTOCOMA
+
+    PARENTESIS_CERRADO shift and go to state 33
+
+
+state 27
+
+    (9) statement -> PRINTF PARENTESIS_ABIERTO ID . PARENTESIS_CERRADO PUNTOCOMA
+
+    PARENTESIS_CERRADO shift and go to state 34
+
+
+state 28
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA . LLAVE_CERRADA
+
+    LLAVE_CERRADA   shift and go to state 35
+
+
+state 29
+
+    (7) statement -> READ ID PUNTOCOMA .
+
+    READ            reduce using rule 7 (statement -> READ ID PUNTOCOMA .)
+    PRINTF          reduce using rule 7 (statement -> READ ID PUNTOCOMA .)
+    ID              reduce using rule 7 (statement -> READ ID PUNTOCOMA .)
+    END             reduce using rule 7 (statement -> READ ID PUNTOCOMA .)
+
+
+state 30
+
+    (4) varlist -> ID COMA varlist .
+
+    PUNTOCOMA       reduce using rule 4 (varlist -> ID COMA varlist .)
+
+
+state 31
+
+    (11) expression -> ID MAS . ID
+
+    ID              shift and go to state 36
+
+
+state 32
+
+    (10) statement -> ID IGUAL expression PUNTOCOMA .
+
+    READ            reduce using rule 10 (statement -> ID IGUAL expression PUNTOCOMA .)
+    PRINTF          reduce using rule 10 (statement -> ID IGUAL expression PUNTOCOMA .)
+    ID              reduce using rule 10 (statement -> ID IGUAL expression PUNTOCOMA .)
+    END             reduce using rule 10 (statement -> ID IGUAL expression PUNTOCOMA .)
+
+
+state 33
+
+    (8) statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 37
+
+
+state 34
+
+    (9) statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 38
+
+
+state 35
+
+    (1) programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA .
+
+    $end            reduce using rule 1 (programa -> ID ID PARENTESIS_ABIERTO PRINTF PARENTESIS_CERRADO LLAVE_ABIERTA declaration statements END PUNTOCOMA LLAVE_CERRADA .)
+
+
+state 36
+
+    (11) expression -> ID MAS ID .
+
+    PUNTOCOMA       reduce using rule 11 (expression -> ID MAS ID .)
+
+
+state 37
+
+    (8) statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA .
+
+    READ            reduce using rule 8 (statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA .)
+    PRINTF          reduce using rule 8 (statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA .)
+    ID              reduce using rule 8 (statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA .)
+    END             reduce using rule 8 (statement -> PRINTF PARENTESIS_ABIERTO STRING PARENTESIS_CERRADO PUNTOCOMA .)
+
+
+state 38
+
+    (9) statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA .
+
+    READ            reduce using rule 9 (statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA .)
+    PRINTF          reduce using rule 9 (statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA .)
+    ID              reduce using rule 9 (statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA .)
+    END             reduce using rule 9 (statement -> PRINTF PARENTESIS_ABIERTO ID PARENTESIS_CERRADO PUNTOCOMA .)
+

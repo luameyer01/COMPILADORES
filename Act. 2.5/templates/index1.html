@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador Léxico y Sintáctico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analizador Léxico y Sintáctico</h1>
+    <form id="codeForm">
+        <label for="codigo">Introduce tu código:</label><br>
+        <textarea id="codigo" name="codigo"></textarea><br><br>
+        <button type="submit">Analizar Código</button>
+        <button type="button" id="clearButton">Borrar</button> <!-- Botón de Borrar -->
+    </form>
+
+    <div id="resultados" class="result"></div>
+
+    <script>
+        document.getElementById('codeForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const codigo = document.getElementById('codigo').value;
+
+            // Enviar el código al servidor para analizar
+            const response = await fetch('/analizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ codigo }),
+            });
+
+            // Obtener los resultados del análisis
+            const resultado = await response.json();
+
+            // Mostrar los errores léxicos y sintácticos
+            let html = `
+                <h2>Resultados del análisis</h2>
+                <strong>Errores léxicos:</strong><br>${resultado.errores_lexicos.length ? resultado.errores_lexicos.join('<br>') : 'No se encontraron errores léxicos.'}<br><br>
+                <strong>Errores sintácticos:</strong><br>${resultado.errores_sintacticos.length ? resultado.errores_sintacticos.join('<br>') : 'No se encontraron errores sintácticos.'}
+            `;
+
+            // Construir la tabla de tokens
+            if (resultado.tabla_tokens.length) {
+                html += `
+                    <h3>Tabla de Tokens</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Reservada</th>
+                                <th>Identificador</th>
+                                <th>Tipo</th>
+                                <th>Línea</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                resultado.tabla_tokens.forEach(token => {
+                    html += `
+                        <tr>
+                            <td>${token.Token}</td>
+                            <td>${token.Reservada ? 'X' : ''}</td>
+                            <td>${token.Identificador ? 'X' : ''}</td>
+                            <td>${token.Tipo}</td>
+                            <td>${token.Línea}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                    <br>
+                    <strong>Total de palabras reservadas: ${resultado.total_reservadas}</strong>
+                `;
+            }
+
+            // Mostrar los resultados en el HTML
+            document.getElementById('resultados').innerHTML = html;
+        });
+
+        // Función para borrar el contenido
+        document.getElementById('clearButton').addEventListener('click', function() {
+            document.getElementById('codigo').value = ''; // Limpiar textarea
+            document.getElementById('resultados').innerHTML = ''; // Limpiar resultados
+        });
+    </script>
+</body>
+</html>
