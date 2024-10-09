@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+    <title>Analizador Léxico y Sintáctico</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Analizador Lexico-Sintáctico</h1>
+        <form id="codeForm">
+            <textarea id="codigo" name="codigo" placeholder="Escribe tu código aquí..."></textarea><br><br>
+            <button type="submit">Analizar</button>
+            <button type="button" id="clearButton">Borrar</button> <!-- Botón de Borrar -->
+        </form>
+
+        <div id="resultados" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('codeForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const codigo = document.getElementById('codigo').value;
+
+            const response = await fetch('/analizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ codigo }),
+            });
+
+            const resultado = await response.json();
+
+            let html = `
+                <h2 > Resultados del análisis</h2>
+                <strong>Léxicos:</strong><br>${resultado.errores_lexicos.length ? resultado.errores_lexicos.join('<br>') : 'No se encontraron errores léxicos.'}<br><br>
+                <strong>Sintácticos:</strong><br>${resultado.errores_sintacticos.length ? resultado.errores_sintacticos.join('<br>') : 'No se encontraron errores sintácticos.'}
+            `;
+
+            if (resultado.tabla_tokens.length) {
+                html += `
+                    <h3>Tabla de Tokens</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Reservada</th>
+                                <th>Identificador</th>
+                                <th>Tipo</th>
+                                <th>Línea</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                resultado.tabla_tokens.forEach(token => {
+                    html += `
+                        <tr>
+                            <td>${token.Token}</td>
+                            <td>${token.Reservada ? 'X' : ''}</td>
+                            <td>${token.Identificador ? 'X' : ''}</td>
+                            <td>${token.Tipo}</td>
+                            <td>${token.Línea}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                    <br>
+                    <strong>Total de palabras reservadas: ${resultado.total_reservadas}</strong>
+                `;
+            }
+
+            document.getElementById('resultados').innerHTML = html;
+        });
+
+        // Función para borrar el contenido
+        document.getElementById('clearButton').addEventListener('click', function() {
+            document.getElementById('codigo').value = ''; // Limpiar textarea
+            document.getElementById('resultados').innerHTML = ''; // Limpiar resultados
+        });
+    </script>
+</body>
+</html>
