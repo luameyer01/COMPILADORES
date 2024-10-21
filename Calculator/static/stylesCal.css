@@ -56,22 +56,6 @@ button:hover {
     background-color: #222;
     padding: 20px;
     border-radius: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid #444;
-    padding: 10px;
-    text-align: left;
-}
-.analizador {
-    background-color: #222;
-    padding: 20px;
-    border-radius: 10px;
     max-height: 300px;
     overflow-y: auto;
 }

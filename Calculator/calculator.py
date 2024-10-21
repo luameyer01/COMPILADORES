@@ -7,15 +7,15 @@ app = Flask(__name__)
 # Definición de los tokens para el analizador léxico
 tokens = (
     'NUMERO', 'MAS', 'MENOS', 'POR', 'DIVIDIR', 
-    'LPAREN', 'RPAREN'
+    'PAREN_IZQ', 'PAREN_DER'
 )
 
 t_MAS = r'\+'
 t_MENOS = r'-'
 t_POR = r'\*'
 t_DIVIDIR = r'/'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
+t_PAREN_IZQ = r'\('
+t_PAREN_DER = r'\)'
 
 def t_NUMERO(t):
     r'\d+(\.\d+)?'
