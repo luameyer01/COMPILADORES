@@ -1,19 +1,24 @@
 body {
-    background-color: black;
-    margin: 0;
+    background-color: #1d1f21;
+    color: white;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.contenedor {
+    display: flex;
+    gap: 20px;
 }
 
 .calculadora {
-    width: 320px;
-    background-color: #1c1c1c;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    width: 300px;
+    background-color: #333;
     padding: 20px;
+    border-radius: 10px;
 }
 
 input {
@@ -24,7 +29,6 @@ input {
     color: white;
     font-size: 24px;
     text-align: right;
-    padding-right: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
 }
@@ -36,31 +40,53 @@ input {
 }
 
 button {
-    background-color: #2e2e2e;
-    color: white;
-    font-size: 1.5em;
-    padding: 20px;
-    text-align: center;
+    height: 50px;
+    font-size: 18px;
     border: none;
-    border-radius: 50%;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-
-.operacion {
-    background-color: #00b300;
-    color: white;
-}
-
-.clear {
-    color: #ff4d4d;
+    background-color: #555;
 }
 
 button:hover {
-    background-color: #4c4c4c;
+    background-color: #777;
 }
 
-button:active {
-    background-color: #777;
+.analizador {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: left;
+}
+.analizador {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #333;
 }

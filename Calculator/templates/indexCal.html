@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Web</title>
+    <title>Calculadora</title>
     <link rel="stylesheet" href="/static/stylesCal.css">
     <script>
         function agregar(valor) {
             document.getElementById("resultado").value += valor;
         }
-
+    
         function limpiar() {
             document.getElementById("resultado").value = "";
+            document.getElementById("tabla-tokens").innerHTML = "<tr><th>Token</th><th>Tipo</th></tr>";
         }
-
+    
         function calcular() {
             const expresion = document.getElementById("resultado").value;
             fetch("/calcular", {
@@ -25,41 +26,67 @@
             .then(data => {
                 if (data.resultado !== undefined) {
                     document.getElementById("resultado").value = data.resultado;
+                    // Analizar la expresión solo si el cálculo es exitoso
+                    agregarAlHistorial(expresion);
                 } else {
                     alert(data.error);
                 }
             })
             .catch(() => alert("Error al calcular"));
         }
+    
+        function agregarAlHistorial(expresion) {
+            fetch("/analizar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ expresion: expresion })
+            })
+            .then(response => response.json())
+            .then(tokens => {
+                const tabla = document.getElementById("tabla-tokens");
+                tokens.forEach(tok => {
+                    tabla.innerHTML += `<tr><td>${tok.token}</td><td>${tok.tipo}</td></tr>`;
+                });
+            });
+        }
     </script>
+    
+
 </head>
 <body>
-    <div class="calculadora">
-        <input type="text" id="resultado" readonly>
-        <div class="botones">
-            <button onclick="agregar('(')" class="btn operacion" >(</button>
-            <button onclick="agregar(')')" class="btn operacion" >)</button>
-            <button onclick="agregar('/')" class="btn operacion" >/</button>
-            <button onclick="limpiar()" class="btn clear" >C</button>
+    <div class="contenedor">
+        <div class="calculadora">
+            <input type="text" id="resultado" readonly>
+            <div class="botones">
+                <button onclick="agregar('(')">(</button>
+                <button onclick="agregar(')')">)</button>
+                <button onclick="agregar('/')">/</button>
+                <button onclick="limpiar()">C</button>
 
-            <button onclick="agregar('7')">7</button>
-            <button onclick="agregar('8')">8</button>
-            <button onclick="agregar('9')">9</button>
-            <button onclick="agregar('*')" class="btn operacion" >X</button>
+                <button onclick="agregar('7')">7</button>
+                <button onclick="agregar('8')">8</button>
+                <button onclick="agregar('9')">9</button>
+                <button onclick="agregar('*')">*</button>
 
-            <button onclick="agregar('4')">4</button>
-            <button onclick="agregar('5')">5</button>
-            <button onclick="agregar('6')">6</button>
-            <button onclick="agregar('-')" class="btn operacion" >-</button>
+                <button onclick="agregar('4')">4</button>
+                <button onclick="agregar('5')">5</button>
+                <button onclick="agregar('6')">6</button>
+                <button onclick="agregar('-')">-</button>
 
-            <button onclick="agregar('1')">1</button>
-            <button onclick="agregar('2')">2</button>
-            <button onclick="agregar('3')">3</button>
-            <button onclick="agregar('+')" class="btn operacion" >+</button>
+                <button onclick="agregar('1')">1</button>
+                <button onclick="agregar('2')">2</button>
+                <button onclick="agregar('3')">3</button>
+                <button onclick="agregar('+')">+</button>
 
-            <button onclick="agregar('0')">0</button>
-            <button onclick="agregar('.')">.</button>
-            <button onclick="calcular()"   class="btn operacion">=</button>
+                <button onclick="agregar('0')">0</button>
+                <button onclick="agregar('.')">.</button>
+                <button onclick="calcular()">=</button>
+                <button onclick="tree()">Tree</button>
+            </div>
+        </div>
+
+        <div class="analizador">
+            <table id="tabla-tokens"></table>
         </div>
     </div>
 </body>
