@@ -4,227 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora con Árbol Sintáctico</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
-          rel="stylesheet" 
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
-          crossorigin="anonymous">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-
-    <style>
-        /* Estilo general */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #e8f5ff;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        /* Contenedor principal */
-        .container {
-            width: 350px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-
-        /* Calculadora */
-        .calculator {
-            background-color: #b0d7ff;
-            padding: 20px;
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Pantalla de la calculadora */
-        .screen {
-            grid-column: span 4;
-            background-color: #fff;
-            border-radius: 12px;
-            padding: 15px;
-            height: 80px;
-            text-align: right;
-            font-size: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Botones */
-        .button {
-            font-size: 14px;
-            padding: 15px;
-            border-radius: 60px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
-        }
-
-        .button:hover {
-            background-color: #e6e6e6;
-        }
-
-        .button:active {
-            transform: scale(0.95);
-        }
-
-        .button.operator {
-            background-color: #ffcccb;
-        }
-
-        .button.clear {
-            background-color: #ff9aa2;
-        }
-
-        /* Sección del Árbol Sintáctico */
-        .nuevo {
-            width: 100%;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            overflow-x: auto;
-            text-align: center;
-        }
-
-        .nuevo h2 {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-        }
-
-        #tree-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 600px;
-        }
-
-        .node circle {
-            fill: #69b3a2;
-            stroke: #333;
-            stroke-width: 2px;
-        }
-
-        .node text {
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            fill: #333;
-            text-anchor: middle;
-            dominant-baseline: middle;
-        }
-
-        .link {
-            fill: none;
-            stroke: #999;
-            stroke-width: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesCal.css') }}">
 </head>
 <body>
     <div class="container">
-        <div class="calculator">
-            <div class="screen">
-                <div class="procedure"></div>
-                <div class="result"></div>
+        <div class="input-section">
+            <div class="calculator">
+                <div class="screen">
+                    <div class="procedure"></div>
+                    <div class="result"></div>
+                </div>
+                <button class="button operator">(</button>
+                <button class="button operator">)</button>
+                <button class="button clear">C</button>
+                <button class="button operator">/</button>
+                
+                <button class="button">7</button>
+                <button class="button">8</button>
+                <button class="button">9</button>
+                <button class="button operator">*</button>
+                
+                <button class="button">4</button>
+                <button class="button">5</button>
+                <button class="button">6</button>
+                <button class="button operator">-</button>
+                
+                <button class="button">1</button>
+                <button class="button">2</button>
+                <button class="button">3</button>
+                <button class="button operator">+</button>
+
+                <button class="button">0</button>
+                <button class="button">.</button>
+                <button class="button clear">DER</button>
+                <button class="button clear">ANS</button>
+
+                <button class="button operator" style="grid-column: span 4;">=</button>
             </div>
-            <button class="button operator">(</button>
-            <button class="button operator">)</button>
-            <button class="button clear">C</button>
-            <button class="button operator">/</button>
-            
-            <button class="button">7</button>
-            <button class="button">8</button>
-            <button class="button">9</button>
-            <button class="button operator">X</button>
-            
-            <button class="button">4</button>
-            <button class="button">5</button>
-            <button class="button">6</button>
-            <button class="button operator">-</button>
-            
-            <button class="button">1</button>
-            <button class="button">2</button>
-            <button class="button">3</button>
-            <button class="button operator">+</button>
-
-            <button class="button">0</button>
-            <button class="button">.</button>
-            <button class="button clear">MR</button>
-            <button class="button clear">MC</button> 
-
-            <button class="button operator" style="grid-column: span 4;">=</button>
         </div>
+        <div class="results-section">
+            <div class="lexico">
+                <h2>Resultado Léxico</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TOKEN</th>
+                            <th>TIPO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lexico-body">
 
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="nuevo">
             <h2>Árbol Sintáctico</h2>
-            <div id="tree-container"></div>
+            <div class="tree" id="tree-container"></div>
         </div>
     </div>
-
+    
     <script>
-        const data = {
-            name: "Expresión",
-            children: [
-                {
-                    name: "Operador +",
-                    children: [
-                        { name: "Número 3" },
-                        { name: "Número 5" }
-                    ]
+        let expresion = '';
+        let ans = ''; 
+
+        function numeroClick(event) {
+            if (event.target.innerText === 'C') {
+                limpiar();
+                return;
+            }
+            if (event.target.innerText === 'DER') {
+                expresion = expresion.slice(0, -1);
+                document.querySelector('.procedure').innerText = expresion;
+                return;
+            }
+            if (event.target.innerText === 'ANS') {
+                expresion += ans; // Usar el valor almacenado de ANS
+                document.querySelector('.procedure').innerText = expresion;
+                return;
+            }
+            expresion += event.target.innerText;
+            document.querySelector('.procedure').innerText = expresion;
+        }
+
+        function operadorClick(event) {
+            expresion += ' ' + event.target.innerText + ' ';
+            document.querySelector('.procedure').innerText = expresion;
+        }
+
+        async function calcular() {
+            let resultado = 0;
+
+            const response = await fetch('/analizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    expresion: expresion,
+                }),
+            });
+
+            const data = await response.json();
+
+            // Crear el HTML para el árbol
+            const treeContainer = document.querySelector('#tree-container');
+            const treeHTML = crearArbolHTML(data.arbol);
+            treeContainer.innerHTML = treeHTML;
+
+            let lexicoFormatted = data.resultado_lexico.map(item => {
+                let tipo = item[0] === "NUMBER" ? "Número" : "OPERADOR";
+                return `<tr>
+                            <td>${item[1]}</td>
+                            <td>${tipo}</td>
+                        </tr>`;
+            }).join("");
+
+            document.querySelector('#lexico-body').innerHTML = lexicoFormatted;
+
+            try {
+                resultado = eval(expresion);
+                ans = resultado; 
+                document.querySelector('.result').innerText = resultado;
+            } catch (error) {
+                document.querySelector('.result').innerText = "Error en la expresión";
+            }
+        }
+
+        // Función que convierte el árbol recibido en HTML jerárquico
+        function crearArbolHTML(arbol) {
+            if (typeof arbol === 'string' || typeof arbol === 'number') {
+                return `<li><div class="operand">${arbol}</div></li>`;
+            }
+            let nodoHTML = `<li><div class="operator">${arbol.operator}</div>`;
+            nodoHTML += `<ul>${arbol.operands.map(operando => crearArbolHTML(operando)).join('')}</ul></li>`;
+            return nodoHTML;
+        }
+
+        function limpiar() {
+            expresion = '';
+            document.querySelector('.procedure').innerText = '';
+            document.querySelector('.result').innerText = '';
+            document.querySelector('#lexico-body').innerHTML = ''; 
+            document.querySelector('#tree-container').innerHTML = ''; 
+        }
+
+        document.querySelectorAll('.button').forEach(function(button) {
+            if (button.innerText === 'C') {
+                button.addEventListener('click', limpiar);
+            } else if (button.classList.contains('operator')) {
+                if (button.innerText === '=') {
+                    button.addEventListener('click', calcular);
+                } else {
+                    button.addEventListener('click', operadorClick);
                 }
-            ]
-        };
-
-        const width = 800;
-        const height = 500;
-
-        const svg = d3.select("#tree-container")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(50,50)");
-
-        const treeLayout = d3.tree().size([width - 100, height - 100]);
-
-        const root = d3.hierarchy(data);
-        treeLayout(root);
-
-        svg.selectAll(".link")
-            .data(root.links())
-            .enter()
-            .append("line")
-            .attr("class", "link")
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
-
-        const node = svg.selectAll(".node")
-            .data(root.descendants())
-            .enter()
-            .append("g")
-            .attr("class", "node")
-            .attr("transform", d => `translate(${d.x},${d.y})`);
-
-        node.append("circle").attr("r", 20);
-        node.append("text").text(d => d.data.name);
+            } else {
+                button.addEventListener('click', numeroClick);
+            }
+        });
     </script>
 </body>
 </html>
