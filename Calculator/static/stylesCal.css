@@ -1,76 +1,168 @@
+/* Estilo general */
+
+
 body {
-    background-color: #1d1f21;
-    color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #e8f5ff;
+    margin: 100;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    height: 100%;
+    color: #333;
 }
 
-.contenedor {
+/* Contenedor principal */
+.container {
+    width: 200px;
     display: flex;
+    flex-direction: column;
     gap: 20px;
+    align-items: center;
 }
 
-.calculadora {
-    width: 300px;
-    background-color: #333;
+/* Calculadora */
+.calculator {
+    background-color: #b0d7ff;
     padding: 20px;
     border-radius: 10px;
-}
-
-input {
-    width: 100%;
-    height: 50px;
-    background-color: #444;
-    border: none;
-    color: white;
-    font-size: 24px;
-    text-align: right;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
-
-.botones {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-gap: 10px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
 }
 
-button {
-    height: 50px;
-    font-size: 18px;
+/* Pantalla de la calculadora */
+.screen {
+    grid-column: span 4;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    height: 80px;
+    text-align: right;
+    font-size: 14px;
+    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Botones */
+.button {
+    font-size: 14px;
+    padding: 15px;
+    border-radius: 60px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    background-color: #555;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-button:hover {
-    background-color: #777;
+/* Efecto de hover y click */
+.button:hover {
+    background-color: #e6e6e6;
 }
 
-.analizador {
-    background-color: #222;
-    padding: 20px;
+.button:active {
+    transform: scale(0.95);
+}
+
+/* Colores de botones */
+.button.operator {
+    background-color: #ffcccb;
+}
+
+.button.clear {
+    background-color: #ff9aa2;
+    font-size: 10px;
+}
+
+.button {
+    background-color: #ffdac1;
+}
+
+/* Pantalla de resultados */
+.results-section, .nuevo {
+    width: 150%;
+    background-color: #ffffff;
+    padding: 12px;
     border-radius: 10px;
-    max-height: 300px;
-    overflow-y: auto;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Títulos */
+h2 {
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+/* Tablas */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
 th, td {
-    border: 1px solid #444;
-    padding: 10px;
-    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
-th {
-    background-color: #333;
+/* Pre para el árbol */
+
+/* Sección del Árbol Sintáctico */
+.nuevo {
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    overflow-x: auto;
+    text-align: center;
+}
+
+/* Título */
+.nuevo h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+}
+
+/* Contenedor del Árbol */
+#tree-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+}
+
+/* Estilo para los nodos */
+.node circle {
+    fill: #69b3a2;
+    stroke: #333;
+    stroke-width: 2px;
+    transition: fill 0.3s;
+}
+
+.node text {
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    fill: #333;
+    text-anchor: middle;
+    /*dominant-baseline: middle;*/
+}
+
+.node:hover circle {
+    fill: #ffcc00;
+}
+
+.link {
+    fill: none;
+    stroke: #999;
+    stroke-width: 2px;
 }
