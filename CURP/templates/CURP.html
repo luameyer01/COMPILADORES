@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador y Analizador de CURP</title>
-    -
+    <title>Generador de CURP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CURP.css') }}">
+    <script>
+        function resetForm() {
+            document.getElementById("curpForm").reset();
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1>Generador y Analizador de CURP</h1>
-        <form method="post">
+        <h1>CURP</h1>
+        <form id="curpForm" method="post" action="/">
             <label for="nombre">Nombre(s)*:</label>
             <input type="text" id="nombre" name="nombre" required>
 
-            <label for="primer_apellido">Primer apellido*:</label>
+            <label for="primer_apellido">Primer Apellido*:</label>
             <input type="text" id="primer_apellido" name="primer_apellido" required>
 
-            <label for="segundo_apellido">Segundo apellido:</label>
+            <label for="segundo_apellido">Segundo Apellido:</label>
             <input type="text" id="segundo_apellido" name="segundo_apellido">
 
             <label for="dia">Día de nacimiento*:</label>
             <select id="dia" name="dia" required>
                 <option value="">Seleccionar el día</option>
-                {% for i in range(1, 32) %}
-                    <option value="{{ "{:02}".format(i) }}">{{ i }}</option>
+                {% for d in range(1, 32) %}
+                <option value="{{ d }}">{{ d }}</option>
                 {% endfor %}
             </select>
 
             <label for="mes">Mes de nacimiento*:</label>
             <select id="mes" name="mes" required>
                 <option value="">Seleccionar el mes</option>
-                {% for i in range(1, 13) %}
-                    <option value="{{ "{:02}".format(i) }}">{{ i }}</option>
+                {% for m in range(1, 13) %}
+                <option value="{{ m }}">{{ m }}</option>
                 {% endfor %}
             </select>
 
             <label for="anio">Año de nacimiento*:</label>
-            <input type="number" id="anio" name="anio" placeholder="Ej. 1985" required>
+            <input type="text" id="anio" name="anio" placeholder="Ej. 1943" required>
 
             <label for="sexo">Sexo*:</label>
             <select id="sexo" name="sexo" required>
@@ -48,16 +53,20 @@
             <label for="estado">Estado*:</label>
             <select id="estado" name="estado" required>
                 <option value="">Selecciona el estado</option>
-                {% for code, name in estados.items() %}
-                    <option value="{{ code }}">{{ name }}</option>
+                {% for key, value in estados.items() %}
+                <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
             </select>
 
-            <button type="submit">Generar y Analizar CURP</button>
+            <div class="button-container">
+                <button type="submit">Buscar</button>
+                <button type="button" onclick="resetForm()">Limpiar</button>
+            </div>
         </form>
 
         {% if result %}
         <div class="result">
+            <h2>Datos del solicitante</h2>
             <p>{{ result }}</p>
         </div>
         {% endif %}

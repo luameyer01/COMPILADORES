@@ -19,12 +19,12 @@ class CurpAnalyzer:
         **{chr(i): i - 55 for i in range(65, 91)}  # 'A' a 'Z', donde A=10, B=11, ..., Z=35
     }
     iniciales_inapropiadas = ["BUEI", "CACA", "CAGA", "CAGO", "CAKA", "CAKO", 
-                              "COGE", "COJA", "COJE", "COJI", "COJO", "CULO", 
-                              "FETO", "GUEY", "JOTO", "KACA", "KACO", "KAGA", 
-                              "KAGO", "KOGE", "KOJO", "KAKA", "KULO", "MAME", 
-                              "MAMO", "MEAR", "MEAS", "MEON", "MION", "MOCO", 
-                              "MULA", "PEDA", "PEDO", "PENE", "PUTA", "PUTO", 
-                              "QULO", "RATA", "RUIN"]
+                            "COGE", "COJA", "COJE", "COJI", "COJO", "CULO", 
+                            "FETO", "GUEY", "JOTO", "KACA", "KACO", "KAGA", 
+                            "KAGO", "KOGE", "KOJO", "KAKA", "KULO", "MAME", 
+                            "MAMO", "MEAR", "MEAS", "MEON", "MION", "MOCO", 
+                            "MULA", "PEDA", "PEDO", "PENE", "PUTA", "PUTO", 
+                            "QULO", "RATA", "RUIN"]
 
     def __init__(self, nombre, primer_apellido, segundo_apellido, dia, mes, anio, sexo, estado):
         self.nombre = nombre.upper()
